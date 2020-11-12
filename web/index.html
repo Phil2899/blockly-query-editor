@@ -11,21 +11,33 @@
 <body>
 	<h1>Visual Query Editor</h1>
 
-    <!--block sizing-->
 	<div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
 
-    <!--multiple block display-->
+
+
 	<xml id="toolbox" style="display: none">
-		<block type="controls_if"></block>
-    		<block type="controls_repeat_ext"></block>
-		<block type="logic_compare"></block>
-		<block type="math_number"></block>
-		<block type="math_arithmetic"></block>
-		<block type="text"></block>
-		<block type="text_print"></block>
-        	<block type="logic_negate"></block>
-        	<block type="logic_null"></block>
-        	<block type="logic_ternary"></block>
+
+        <category name="Logic" colour="%{BKY_LOGIC_HUE}">
+            <block type="controls_if"></block>
+			<block type="logic_compare"></block>
+			<block type="logic_negate"></block>
+	        <block type="logic_null"></block>
+	        <block type="logic_ternary"></block>
+        </category>
+        <category name="Loops" colour="%{BKY_LOOPS_HUE}">
+            <block type="controls_repeat_ext"></block>
+        </category>
+    
+        <category name="Math" colour="%{BKY_MATH_HUE}">
+            <block type="math_number"></block>
+            <block type="math_arithmetic"></block>
+        </category>   
+        <category name="Text" colour="%{BKY_TEXTS_HUE}">
+            <block type="text"></block>
+		    <block type="text_print"></block>
+        </category>
+
+
 	</xml>
 
 	<script>
