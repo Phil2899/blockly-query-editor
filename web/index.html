@@ -6,14 +6,17 @@
 	<script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
 	<script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
 	<script src="https://unpkg.com/blockly/msg/en.js"></script>
+    <script src="javascript_compressed.js"></script>
+
 
 </head>
 <body>
 	<h1>Visual Query Editor</h1>
 
-	<div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
-
-
+    <div style="widht=100%">
+        <div id="blocklyDiv" style="display: inline-block; height: 480px; width: 58%;"></div>
+        <textarea id="codebox" disabled="disabled" style="display: inline-block; height: 480px; width:38%"></textarea>
+    </div>
 
 	<xml id="toolbox" style="display: none">
 
@@ -36,13 +39,34 @@
             <block type="text"></block>
 		    <block type="text_print"></block>
         </category>
-
+        <sep></sep>
+        <category name="Variables" custom="VARIABLE" colour="%{BKY_VARIABLES_HUE}">
+        </category>
+        <category name="Functions" colour="%{BKY_PROCEDURES_HUE}">
+            <block type="procedures_defnoreturn"></block>
+            <block type="procedures_defreturn"></block>
+            <block type="procedures_mutatorcontainer"></block>
+        </category>
 
 	</xml>
 
+    
+   
+        
+    
+
 	<script>
+
 		var workspace = Blockly.inject('blocklyDiv',
-		  {toolbox: document.getElementById('toolbox')});
+          {toolbox: document.getElementById('toolbox')});
+          
+
+        function myUpdateFunction(event) {
+              var code = Blockly.JavaScript.workspaceToCode(workspace);
+            document.getElementById('textarea').value = code;
+        }
+        workspace.addChangeListener(myUpdateFunction);
+
 	</script>
 
 </body>
