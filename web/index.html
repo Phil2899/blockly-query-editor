@@ -1,43 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Visual Query Editor</title>
+    <meta charset="utf-8">
+    <title>Visual Query Editor</title>
 
-	<script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
-	<script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
-	<script src="https://unpkg.com/blockly/msg/en.js"></script>
+    <script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
+    <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
+    <script src="https://unpkg.com/blockly/msg/en.js"></script>
     <script src="javascript_compressed.js"></script>
+    <script src="php_compressed.js"></script>
+
 
 
 </head>
 <body>
-	<h1>Visual Query Editor</h1>
+    <h1>Visual Query Editor</h1>
 
-    <div style="widht=100%">
-        <div id="blocklyDiv" style="display: inline-block; height: 480px; width: 58%;"></div>
-        <textarea id="codebox" disabled="disabled" style="display: inline-block; height: 480px; width:38%"></textarea>
-    </div>
+    <p>
+        <button onclick="showCode()">Show Code</button>
+    </p>
 
-	<xml id="toolbox" style="display: none">
+    <div id="blocklyDiv" style="display: inline-block; height: 480px; width: 58%;"></div>
+    <div id="codeDiv" style="display : inline-block; height: 480px; width:38%; border:solid"></div>
 
+
+    <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">
             <block type="controls_if"></block>
-			<block type="logic_compare"></block>
-			<block type="logic_negate"></block>
-	        <block type="logic_null"></block>
-	        <block type="logic_ternary"></block>
+            <block type="logic_compare"></block>
+            <block type="logic_negate"></block>
+            <block type="logic_null"></block>
+            <block type="logic_ternary"></block>
         </category>
         <category name="Loops" colour="%{BKY_LOOPS_HUE}">
             <block type="controls_repeat_ext"></block>
         </category>
-    
         <category name="Math" colour="%{BKY_MATH_HUE}">
             <block type="math_number"></block>
             <block type="math_arithmetic"></block>
         </category>   
         <category name="Text" colour="%{BKY_TEXTS_HUE}">
             <block type="text"></block>
-		    <block type="text_print"></block>
+            <block type="text_print"></block>
         </category>
         <sep></sep>
         <category name="Variables" custom="VARIABLE" colour="%{BKY_VARIABLES_HUE}">
@@ -47,27 +51,102 @@
             <block type="procedures_defreturn"></block>
             <block type="procedures_mutatorcontainer"></block>
         </category>
+    </xml>
 
-	</xml>
+    <xml xmlns="https://developers.google.com/blockly/xml" id="startBlocks" style="display: none">
+        <block type="controls_if" inline="false" x="20" y="20">
+        <mutation else="1"></mutation>
+        <value name="IF0">
+            <block type="logic_compare" inline="true">
+            <field name="OP">EQ</field>
+            <value name="A">
+                <block type="math_arithmetic" inline="true">
+                <field name="OP">MULTIPLY</field>
+                <value name="A">
+                    <block type="math_number">
+                    <field name="NUM">6</field>
+                    </block>
+                </value>
+                <value name="B">
+                    <block type="math_number">
+                    <field name="NUM">7</field>
+                    </block>
+                </value>
+                </block>
+            </value>
+            <value name="B">
+                <block type="math_number">
+                <field name="NUM">42</field>
+                </block>
+            </value>
+            </block>
+        </value>
+        <statement name="DO0">
+            <block type="text_print" inline="false">
+            <value name="TEXT">
+                <block type="text">
+                <field name="TEXT">Don't panic</field>
+                </block>
+            </value>
+            </block>
+        </statement>
+        <statement name="ELSE">
+            <block type="text_print" inline="false">
+            <value name="TEXT">
+                <block type="text">
+                <field name="TEXT">Panic</field>
+                </block>
+            </value>
+            </block>
+        </statement>
+        </block>
+    </xml>   
 
+<!--
+    <xml id="textArea">
+    </xml>
+
+    <pre class="codeBlock">
+    </pre>
+-->   
     
-   
-        
     
 
-	<script>
+    <script>
 
-		var workspace = Blockly.inject('blocklyDiv',
+        var workspace = Blockly.inject('blocklyDiv',
           {toolbox: document.getElementById('toolbox')});
-          
+        
+        Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),workspace);
 
+        
+        function showCode() {
+            // Ca bloque là
+            var code = Blockly.JavaScript.workspaceToCode(workspace);
+            alert('vraiment presque');
+        }
+     
+        /*
+        function updateFunction(event){
+            var codeDiv = document.getElementById('codeDiv');
+            var codeHolder = document.createElement('pre');
+            var code = document.createTextNode(Blockly.workspaceToCode(workspace));
+            codeHolder.appendChild(code);
+            codeDiv.replaceChild(codeHolder, codeDiv.lastElementChild);
+            
+            prettyPrint();
+        }
+        workspace.addChangeListener(updateFunction);
+        
         function myUpdateFunction(event) {
-              var code = Blockly.JavaScript.workspaceToCode(workspace);
+            var code = Blockly.JavaScript.workspaceToCode(workspace);
             document.getElementById('textarea').value = code;
+            alert('Presque');
         }
         workspace.addChangeListener(myUpdateFunction);
+        */
 
-	</script>
+    </script>
 
 </body>
 </html>
