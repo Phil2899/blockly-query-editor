@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
     <script src="https://unpkg.com/blockly/msg/en.js"></script>
     <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
-    <script src="php_compressed.js"></script>
+    <script src="https://unpkg.com/blockly/php_compressed.js"></script>
 
 
 
@@ -16,24 +16,22 @@
 <body>
     <h1>Visual Query Editor</h1>
 
+    
     <div class="dropdown-bar">
         Language : 
         
 
-        <div id="underline" data-children-count ="1">
-            <section id="languageDropdown" style="outline : none; font-size : 16px" onchange="myUpdateFunction();">
+        <p>
+            <select id="languageDropdown" style="font-size : 16px" onchange="myUpdateFunction();">
                 <option value="JavaScript"> JavaScript</option>
                 <option value="PHP">PHP</option>
-            </section>
-        </div>
+            </select>
+        </p>
 
-
-    <p>
-        <button onclick="showCode()">Show Code</button>
-    </p>
+    </div>
 
     <div id="blocklyDiv" style="display: inline-block; height: 480px; width: 58%;"></div>
-    <div id="codeDiv" style="display : inline-block; height: 480px; width:38%; border:solid">
+    <div id="codeDiv" style="display : inline-block; height: 480px; width:38%; padding:8px ;overflow: scroll">
 
         <pre id="codeBlock_js" class="prettyprint_js"></pre>
 
@@ -119,32 +117,29 @@
     </xml>   
 
 
-    
-    
   
-    
     
 
     <script>
 
         var workspace = Blockly.inject('blocklyDiv',
           {toolbox: document.getElementById('toolbox')});
-        
+
         Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),workspace);
 
         
-        function showCode() {
-            Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
-            var code = Blockly.JavaScript.workspaceToCode(workspace);
-            
-        }
-     
+        
         
         function myUpdateFunction(event){
+            
+            var languageDropdown = document.getElementById('languageDropdown');
+            
+            var language = languageDropdown.value;
+            
             var codeDiv = document.getElementById('codeDiv');
             var codeHolder = document.createElement('pre');
             codeHolder .className = 'prettyprint_js';
-            var code = document.createTextNode(Blockly.workspaceToCode(workspace));
+            var code = document.createTextNode(Blockly[language].workspaceToCode(workspace));
             codeHolder.appendChild(code);
             codeDiv.replaceChild(codeHolder, codeDiv.lastElementChild);
             
