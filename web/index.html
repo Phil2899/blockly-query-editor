@@ -7,23 +7,41 @@
     <script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
     <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
     <script src="https://unpkg.com/blockly/msg/en.js"></script>
-    <script src="javascript_compressed.js"></script>
-    <script src="php_compressed.js"></script>
+    <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
 
-
+    
+    <script src="../src/customBlocks_sql.js"></script>
+    <script src="../src/SQLCodeGenerator.js"></script>
 
 </head>
+
+
 <body>
     <h1>Visual Query Editor</h1>
 
-    <p>
-        <button onclick="showCode()">Show Code</button>
-    </p>
+    
+    <!-- Langage selection-->
+    <div class="dropdown-bar">
+        Language : 
+        
+
+        <p>
+            <select id="languageDropdown" style="font-size : 16px" onchange="updateFunction();">
+                <option value="JavaScript">JavaScript</option>
+                <option value="SQL" selected>SQL</option>
+            </select>
+        </p>
+
+    </div>
 
     <div id="blocklyDiv" style="display: inline-block; height: 480px; width: 58%;"></div>
-    <div id="codeDiv" style="display : inline-block; height: 480px; width:38%; border:solid"></div>
+    <div id="codeDiv" style="display : inline-block; height: 480px; width:38%; padding:8px ;overflow: scroll">
 
+        <pre id="codeBlock_js" class="prettyprint_js"></pre>
 
+    </div>
+    
+    <!-- Creation of the toolbox and organization of the elements inside -->
     <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
         <category name="Logic" colour="%{BKY_LOGIC_HUE}">
             <block type="controls_if"></block>
@@ -38,10 +56,15 @@
         <category name="Math" colour="%{BKY_MATH_HUE}">
             <block type="math_number"></block>
             <block type="math_arithmetic"></block>
+            <block type="math_number_property"></block>
         </category>   
         <category name="Text" colour="%{BKY_TEXTS_HUE}">
             <block type="text"></block>
+            <block type="text_join"></block>
+            <block type="text_charAt"></block>
             <block type="text_print"></block>
+            <block type="text_isEmpty"></block>
+            <block type="text_multiline"></block>
         </category>
         <sep></sep>
         <category name="Variables" custom="VARIABLE" colour="%{BKY_VARIABLES_HUE}">
@@ -51,100 +74,118 @@
             <block type="procedures_defreturn"></block>
             <block type="procedures_mutatorcontainer"></block>
         </category>
+        <sep></sep>
+        <category name="SQL" colour="42">
+            <category name="Request">
+            	<block type="sql_select"></block>
+            	<block type="sql_all"></block>
+                <block type="sql_table"></block>
+                <block type="sql_column"></block>
+                <block type="sql_value"></block>
+                <block type="sql_as"></block>
+                <block type="sql_add"></block>
+                <block type="sql_order_by"></block>
+                <block type="sql_join"></block>
+                <block type="sql_in"></block>
+            </category>
+            <category name="Condition">
+                <block type="sql_and"></block>
+                <block type="sql_or"></block>
+                <block type="sql_not"></block>
+                <block type="sql_null"></block>
+            </category>    
+            <category name="Fonctions">
+                <block type="sql_f_sum"></block>
+                <block type="sql_f_max"></block>
+                <block type="sql_f_min"></block>
+                <block type="sql_f_count"></block>
+                <block type="sql_f_avg"></block>
+                <block type="sql_f_round"></block>
+                <block type ="sql_compare"></block>
+            </category>    
+        </category>
     </xml>
 
+
+    <!-- Creation of an exemple to display at the opening of the page -->
     <xml xmlns="https://developers.google.com/blockly/xml" id="startBlocks" style="display: none">
-        <block type="controls_if" inline="false" x="20" y="20">
-        <mutation else="1"></mutation>
-        <value name="IF0">
-            <block type="logic_compare" inline="true">
-            <field name="OP">EQ</field>
-            <value name="A">
-                <block type="math_arithmetic" inline="true">
-                <field name="OP">MULTIPLY</field>
-                <value name="A">
-                    <block type="math_number">
-                    <field name="NUM">6</field>
-                    </block>
-                </value>
-                <value name="B">
-                    <block type="math_number">
-                    <field name="NUM">7</field>
-                    </block>
-                </value>
-                </block>
-            </value>
-            <value name="B">
-                <block type="math_number">
-                <field name="NUM">42</field>
-                </block>
-            </value>
-            </block>
-        </value>
-        <statement name="DO0">
-            <block type="text_print" inline="false">
-            <value name="TEXT">
-                <block type="text">
-                <field name="TEXT">Don't panic</field>
-                </block>
-            </value>
-            </block>
-        </statement>
-        <statement name="ELSE">
-            <block type="text_print" inline="false">
-            <value name="TEXT">
-                <block type="text">
-                <field name="TEXT">Panic</field>
-                </block>
-            </value>
-            </block>
-        </statement>
-        </block>
+
+    	<block type = "sql_select" x="20" y="20">
+    		<value name ="SELECT">
+		   		<block type="sql_all"></block>
+			</value>
+			<value name ="FROM">
+				<block type="sql_table">
+					<field name="table">CUSTOMERS</field>
+				</block>
+			</value>
+			<value name="WHERE">
+				<block type="sql_table">
+					<field name="table">ID</field>
+					<value name="TABLE">
+						<block type="sql_in">
+							<field name="dropdown_in">IN</field>
+							<statement name="IN">
+								<block type="sql_select">
+									<value name="SELECT">
+										<block type="sql_table">
+											<field name="table">ID</field>
+										</block>
+									</value>
+									<value name="FROM">
+										<block type="sql_table">
+											<field name="table">CUSTOMERS</field>
+										</block>
+									</value>
+									<value name="WHERE">
+										<block type="sql_compare">
+											<field name='dropdown_compare'>></field>
+											<value name="COMPARED">
+												<block type="sql_table">
+													<field name="table">SALARY</field>
+												</block>
+											</value>
+											<value name="COMPARE">
+												<block type="sql_value">
+													<field name="value">4500</field>
+												</block>
+											</value>
+										</block>
+									</value>
+								</block>
+							</statement>
+						</block>
+					</value>	
+				</block>
+			</value>
+    	</block>
+    
     </xml>   
 
-<!--
-    <xml id="textArea">
-    </xml>
 
-    <pre class="codeBlock">
-    </pre>
--->   
-    
-    
 
     <script>
 
         var workspace = Blockly.inject('blocklyDiv',
           {toolbox: document.getElementById('toolbox')});
-        
+
         Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'),workspace);
 
-        
-        function showCode() {
-            // Ca bloque là
-            var code = Blockly.JavaScript.workspaceToCode(workspace);
-            alert('vraiment presque');
-        }
-     
-        /*
+
         function updateFunction(event){
+            
+            var languageDropdown = document.getElementById('languageDropdown');
+            
+            var language = languageDropdown.value;
             var codeDiv = document.getElementById('codeDiv');
             var codeHolder = document.createElement('pre');
-            var code = document.createTextNode(Blockly.workspaceToCode(workspace));
+            codeHolder.className = 'prettyprint_js';
+            var code = document.createTextNode(Blockly[language].workspaceToCode(workspace));
             codeHolder.appendChild(code);
-            codeDiv.replaceChild(codeHolder, codeDiv.lastElementChild);
-            
-            prettyPrint();
+            codeDiv.replaceChild(codeHolder, codeDiv.lastElementChild);    
         }
         workspace.addChangeListener(updateFunction);
         
-        function myUpdateFunction(event) {
-            var code = Blockly.JavaScript.workspaceToCode(workspace);
-            document.getElementById('textarea').value = code;
-            alert('Presque');
-        }
-        workspace.addChangeListener(myUpdateFunction);
-        */
 
     </script>
 
